@@ -1,0 +1,20 @@
+---
+develop: &develop
+  webserver:
+    auth_userpw: schulcloud:veryStrongPassword
+  app:
+    tmpdir: /tmp
+    cache: /tmp/cache
+    use_cache: True
+  amqp:
+    url: amqp://schulcloud:veryStrongPassword@localhost/previewgenerator
+    previewgenerator:
+      queue: previewgenerator
+      routing_key: previewgenerator
+
+production:
+  <<: *develop
+  app:
+    tmpdir: /tmp
+    cache: /tmp/cache
+    use_cache: False
