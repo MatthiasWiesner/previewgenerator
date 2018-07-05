@@ -62,17 +62,17 @@ class Webserver(object):
                 "path": "/generatepreview",
                 "method": "POST",
                 "params": {
-                    "download_uri": {
+                    "download_url": {
                         "type": "string",
                         "description": "Complete url to the downloadable file"
                     },
-                    "signed_s3_uri": {
+                    "signed_s3_url": {
                         "type": "string",
                         "description": "Complete presigned url to upload the preview image"
                     },
-                    "callback_uri": {
+                    "callback_url": {
                         "type": "string",
-                        "description": "Complete url to the callback uri"
+                        "description": "Complete url to the callback"
                     },
                 }
             }

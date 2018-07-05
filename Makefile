@@ -27,6 +27,8 @@ install_packages:
 	apt install -y \
 		zlib1g-dev \
 		libjpeg-dev \
+		imagemagick \
+		ghostscript \
 		python3 \
 		python3-dev \
 		python3-setuptools \

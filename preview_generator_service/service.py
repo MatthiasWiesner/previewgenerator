@@ -26,7 +26,9 @@ class PreviewGeneratorSettings(object):
         if 'AUTH_USERPW' in os.environ:
             self.config['webserver']['auth_userpw'] = os.environ['AUTH_USERPW']
 
-        print(self.config)
+        if 'USE_CACHE' in os.environ:
+            self.config['app']['use_cache'] = os.environ['USE_CACHE'] == 'true'
+
         loglevel = logging.DEBUG if self.debug  else logging.ERROR
         logging.basicConfig(level=loglevel)
 

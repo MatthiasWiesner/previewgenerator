@@ -33,5 +33,6 @@ services:
     environment:
       ENV: production
       DEBUG: 'false'
+      USE_CACHE: 'false'
       AMQP_URL: amqp://schulcloud:veryStrongPassword@rabbitmq/previewgenerator
     restart: always

@@ -7,10 +7,10 @@ The preview generator service creates preview images from downloadable files by 
 ## Usage
 The preview generator service provides an http(s) endpoint to process incoming requests:
 ```
-POST /filepreview
+POST /generatepreview
 {
     "download_url": "http://example.com/static/powerpoint1.ppt",
-    "signed_s3_url": "https://example.com/powerpoint1.png?options...",
+    "signed_s3_url": "https://example.com/powerpoint1.jpg?options...",
     "callback_url": "http://example.com/callback/powerpoint1.ppt",
     "options": {
         "width": 200
@@ -22,10 +22,10 @@ The options can be:
 - `width`, `height`: integer (pixel)
 - `page`: integer (default 1)
 
-Upon this request, the preview generator service creates an internal _generate-preview-job_ and returns `HTTP/1.1 202 Accepted`
+And here comes a magic: The generator has internally a default of 256px for both width and height. The generator scales up the preview images until the first value  - whether height or width - is reached. So, if you want a 200px wide image and specify only the width of 200px, then an image is created with 181px width and 256px height. To still get a 200px wide image, an oversized height must be specified, e.g. 2000px.
 
 ## Generate Preview Job
-
+Upon this request, the preview generator service creates an internal _generate-preview-job_ and returns `HTTP/1.1 202 Accepted`
 The generate-preview-job consists of the tasks:
 
 1. Download the file
@@ -72,6 +72,18 @@ To get the preview generator service running in a Vagrant VM:
 4. Run `vagrant up`
 
 ## Docker
-A docker image is created based on the `node:10.5.0-stretch` Debian-Stretch image.
+Two docker images are created based on the `node:10.5.0-stretch` Debian-Stretch image.
+- `docker pull schulcloud/previewgenerator:latest`
+- `docker pull schulcloud/previewgenerator.webserver:latest`
 
-So that the preview-generator-service, preview-generator-webserver and the rabbitmq-server can be run and connected, `docker-compose` can be used. For more details see `docker-compose.yml`. In production mode, however, this file must be adjusted accordingly. The necessary environment variables are `AUTH_USERPW` and the `AMQP_URL`.
+So that the previewgenerator-service, previewgenerator-webserver and the rabbitmq-server can be run and connected, `docker-compose` can be used. For more details see `docker-compose.yml`. In production mode, however, this file must be adjusted accordingly. 
+
+You have to adjust the `AUTH_USERPW`.
+
+If you don't use an external rabbitmq-server, you have to:
+1. Create the folder `./secrets`
+2. Copy `./resources/rabbitmq-definitions.template.json` to `./secrets/rabbitmq-definitions.json`. 
+    Adjust the amqp `<user>` and the `<sha256-hash-of-users-password>`. To get the `<sha256-hash-of-users-password>` you can follow the (missleading) documentation from rabbitmq: https://www.rabbitmq.com/passwords.html#computing-password-hash.
+    Or you can use my tool. Change to ./resources and run `python2 encrypt_rabbitmq_password.py --password="<your-rabbit-password>"` (only python2).
+3. Adjust the `AMQP_URL` according to the new credentials.
+
